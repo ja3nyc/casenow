@@ -1,24 +1,37 @@
+"use client";
+
+import { useEffect } from "react";
+import { useToast } from "../ui/use-toast";
+
 export type Message =
   | { success: string }
   | { error: string }
   | { message: string };
 
 export function FormMessage({ message }: { message: Message }) {
-  return (
-    <div className="flex flex-col gap-2 w-full max-w-md text-sm">
-      {"success" in message && (
-        <div className="text-green-500 border-l-2 border-green-500 px-4">
-          {message.success}
-        </div>
-      )}
-      {"error" in message && (
-        <div className="text-red-500 border-l-2 border-red-500 px-4">
-          {message.error}
-        </div>
-      )}
-      {"message" in message && (
-        <div className="text-foreground border-l-2 px-4">{message.message}</div>
-      )}
-    </div>
-  );
+  const { toast } = useToast();
+  useEffect(() => {
+    const isMessage = "message" in message;
+    const isError = "error" in message;
+    const isSuccess = "success" in message;
+    if (isMessage) {
+      toast({
+        title: message.message,
+        duration: 3000,
+      });
+    } else if (isError) {
+      toast({
+        title: message.error,
+        variant: "destructive",
+        duration: 3000,
+      });
+    } else if (isSuccess) {
+      toast({
+        title: message.success,
+        variant: "success",
+        duration: 3000,
+      });
+    }
+  }, [message]);
+  return <></>;
 }

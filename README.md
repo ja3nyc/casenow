@@ -1,93 +1,132 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Development process
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+## Local Development
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+### Setting Up App
 
-## Features
+1. Use command `npm run dev` to start dev version of app
+2. Use command `npm run build` to build app
+3. Use command `npm run start` to start app in prod
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+| Username         | Password          |
+| ---------------- | ----------------- |
+| ja3nyc@gmail.com | 123456 or 1234567 |
 
-## Demo
+### Setting Up Database
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+#### Setup Local Supabase
 
-## Deploy to Vercel
+##### Commands
 
-Vercel deployment will guide you through creating a Supabase account and project.
+| Commands Used     |
+| ----------------- |
+| `supabase init`   |
+| `supabase start`  |
+| `supabase status` |
+| `supabase stop`   |
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+##### Steps
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This%20starter%20configures%20Supabase%20Auth%20to%20use%20cookies%2C%20making%20the%20user's%20session%20available%20throughout%20the%20entire%20Next.js%20app%20-%20Client%20Components%2C%20Server%20Components%2C%20Route%20Handlers%2C%20Server%20Actions%20and%20Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
+1. Initiate the supabase docker instance using the command `supabase init`
+2. Start the supabase process using `supabase start`
+3. To find the supabase api url, studio url, and the various api-keys use the command `supabase status`
+4. To stop all the supabase docker processes use the comamnd `supabase stop`
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+#### Manual Migration Process
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+##### Commands
 
-## Clone and run locally
+| Commands Used                             |
+| ----------------------------------------- |
+| `supabase migration new <migration_name>` |
+| `supabase db reset`                       |
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+##### Steps
 
-2. Create a Next.js app using the Supabase Starter template npx command
+1. Create a manual migration file using the command `supabase migration new <migration_name>`
+2. Use command `supabase db reset` to apply migration changes to local database
 
-   ```bash
-   npx create-next-app -e with-supabase
-   ```
+#### Automated Migration Process
 
-3. Use `cd` to change into the app's directory
+##### Commands
 
-   ```bash
-   cd name-of-new-app
-   ```
+| Commands Used                          |
+| -------------------------------------- |
+| `supabase db diff -f <migration_name>` |
 
-4. Rename `.env.local.example` to `.env.local` and update the following:
+##### Steps
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
+1. Update the tables in the local editor at `http://127.0.0.1:54323/`
+2. Create a migration file using the `supabase db diff -f <migration_name>` command
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://app.supabase.com/project/_/settings/api)
+#### Oh shit I messed up!? What do I do
 
-5. You can now run the Next.js local development server:
+##### Commands
 
-   ```bash
-   npm run dev
-   ```
+| Commands Used                                                     |
+| ----------------------------------------------------------------- |
+| `supabase migration repair <migration_version> --status reverted` |
+| `supabase db reset`                                               |
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+##### Steps
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+1. Revert the bad migration using the `supabase migration repair <migration_version> --status reverted` command
+2. Add/Remove the psql code and save the file
+3. Reset the local database using `supabase db reset` to apply the migration changes
 
-## Feedback and issues
+#### Development Cycle
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+##### Branches
 
-## More Supabase examples
+| Branch Name           | Usage                                             |
+| --------------------- | ------------------------------------------------- |
+| `main`                | Production branch                                 |
+| `develop`             | Staging branch                                    |
+| `feat/<feature_name>` | New feature implementation                        |
+| `chore/<chore_name>`  | Other changes that don't modify src or test files |
+| `bug/<bug_name>`      | Fixing a bug in the production code               |
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+##### Process
+
+![Supabase Development Image](https://supabase.com/docs/_next/image?url=%2Fdocs%2Fimg%2Flocal-dev-environment.svg&w=1920&q=75)
+
+##### Steps
+
+1. When you push local changes to git branch, there is a github action named `ci.yaml` that spins up a shadow database and checks the validity of the changes
+2. Once the changes are validated and the branch is complete, we push from the `branch` to `develop`
+3. This runs the `staging.yaml` github action, which applies the database changes in the form of migrations against the test database
+4. Check the staging database to ensure everything is good before we push to production
+5. After staging branch is tested, we can begin the process to push to prod.
+6. Once we are ready to push to prod, perform a backup on prod.
+7. Then, we will open a PR request and apply the database changes from `develop` to `main` branch once merged
+
+#### Handy Tips
+
+| Command                                                     | Usage                                         |
+| ----------------------------------------------------------- | --------------------------------------------- |
+| `supabase db dump -f supabase/seed.sql --data-only --local` | Exports seed data for local supabase instance |
+
+#### Syncing Prod to Dev to Local
+
+##### Commands
+
+| Commands Used                                                     |
+| ----------------------------------------------------------------- |
+| `supabase migration repair <migration_version> --status reverted` |
+| `supabase migration repair <migration_version> --status applied`  |
+| `supabase db reset`                                               |
+| `supabase link --project-ref <project_ref_id>`                    |
+| `supabase db pull`                                                |
+| `supabase db pull --schema auth,storage`                          |
+| `supabase db diff -f <migration_name>`                            |
+
+##### Steps
+
+1. Link ur local supabase cli to prod ref id using command `supabase link --project-ref <project_ref_id>`
+2. Go to prod and dev database and clear out all of the migrations `supabase migration repair <migration_version> --status reverted`
+3. Delete any local migrations in the `supabase/migrations` folder
+4. Pull the prod scheme to the `supabase/migrations` folder using `supabase db pull`
+5. Diff the local to prod using `supabase db diff -f <migration_name>`
+6. Reset local database using `supabase db reset` to apply latest migrations and ensure they work
+7. Link supabase cli back to dev database using command `supabase link --project-ref <project_ref_id>`
+8. Apply all the migrations to dev (only if local and dev are synced already) using `supabase migration repair <migration_version> --status applied` where the `<migration_version>` is the version in the migration file name (beginning digits)
